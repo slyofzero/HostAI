@@ -6,6 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --main-color: #3b82f6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,4 +31,16 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.triangle:before {
+  border-color: #0000 var(--main-color) #0000 #0000;
+  border-style: solid;
+  border-width: 0 30px 30px 0;
+  content: "";
+  height: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 0;
 }
