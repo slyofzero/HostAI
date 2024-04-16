@@ -5,10 +5,17 @@ import { SelectTick } from "./SelectTick";
 import {
   InstanceType,
   Locations,
+  OSTypes,
   instanceLocations,
+  instanceOs,
+  instanceTypeOS,
   instanceTypes,
 } from "@/data";
-import { InstanceLocation, InstanceTypeComp } from "./dashboard";
+import { InstanceLocation, InstanceOS, InstanceTypeComp } from "./dashboard";
+import { useMemo } from "react";
+import { instancePlans } from "@/data/instances/plan";
+import { InstancePlan } from "./dashboard/InstancePlan";
+import { classNames } from "@/utils/styling";
 
 export function DeployInstanceButton() {
   const { setShowInstances, showInstances } = useGlobalStates();
@@ -30,6 +37,16 @@ export function DeployInstanceButton() {
 }
 
 export function DeployInstance() {
+  const { deployInstance } = useGlobalStates();
+  const allDeployInstanceFieldsFills = useMemo(
+    () => Object.values(deployInstance).every((value) => Boolean(value)),
+    [deployInstance]
+  );
+
+  function deployInstanceRequest() {
+    if (!allDeployInstanceFieldsFills) return;
+  }
+
   return (
     <div className="w-full h-full flex flex-col overflow-y-auto p-4">
       <h1 className="pl-10 py-5 text-left w-full text-4xl font-bold">
@@ -58,30 +75,11 @@ export function DeployInstance() {
       <div className="w-full mt-14">
         <h2 className="text-2xl">Choose Operation System</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-6">
-          <div className="w-full relative rounded border border-neutral-800 p-4 cursor-pointer transition-colors duration-500 ease-in-out">
-            <div className="flex flex-row items-center">
-              <Image
-                height={200}
-                width={200}
-                src="./ubuntu.svg"
-                alt=""
-                className="max-w-[25px] mr-4"
-              />
-              <p className="font-bold text-sm">Linux (Ubuntu)</p>
-            </div>
-          </div>
-          <div className="w-full relative rounded border border-neutral-800 p-4 cursor-pointer transition-colors duration-500 ease-in-out">
-            <div className="flex flex-row items-center">
-              <Image
-                height={200}
-                width={200}
-                src="./windows.svg"
-                alt=""
-                className="max-w-[25px] mr-4"
-              />
-              <p className="font-bold text-sm">Windows 11</p>
-            </div>
-          </div>
+          {Object.entries(instanceTypeOS[deployInstance.type]).map(
+            ([key, value]) => (
+              <InstanceOS key={key} {...value} os={key as OSTypes} />
+            )
+          )}
         </div>
       </div>
       <div className="w-full mt-14">
@@ -95,34 +93,25 @@ export function DeployInstance() {
             <p className="w-full text-sm text-zinc-400">Bandwidth</p>
             <p className="w-full text-sm text-zinc-400">Price</p>
           </div>
-          <div className="flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer">
-            <p className="w-full text-sm font-bold">Competitor</p>
-            <p className="w-full text-sm">8-core 3.1GHz</p>
-            <p className="w-full text-sm">12GB</p>
-            <p className="w-full text-sm">512GB SSD</p>
-            <p className="w-full text-sm">1GB</p>
-            <p className="w-full text-sm">
-              <span className="font-bold">$40/month </span> <br />
-              $0.055/hour
-            </p>
-          </div>
-          <div className="flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer">
-            <p className="w-full text-sm font-bold">Premium</p>
-            <p className="w-full text-sm">8-core 3.7GHz</p>
-            <p className="w-full text-sm">28GB</p>
-            <p className="w-full text-sm">512GB SSD</p>
-            <p className="w-full text-sm">1GB</p>
-            <p className="w-full text-sm">
-              <span className="font-bold">$65/month </span> <br />
-              $0.089/hour
-            </p>
-          </div>
+
+          {Object.entries(instancePlans[deployInstance.type]).map(
+            ([key, value]) => (
+              <InstancePlan key={key} {...value} plan={key} />
+            )
+          )}
         </div>
       </div>
+
       <div className="w-full flex justify-end items-center mt-12 px-4">
         <button
-          className="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 min-w-unit-20 h-unit-10 text-small gap-unit-2 [&amp;>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none bg-primary text-primary-foreground data-[hover=true]:opacity-hover max-w-fit px-8 rounded"
+          className={classNames(
+            "z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 min-w-unit-20 h-unit-10 text-small gap-unit-2 [&amp;>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none  text-primary-foreground data-[hover=true]:opacity-hover max-w-fit px-8 rounded py-2 text-sm",
+            allDeployInstanceFieldsFills
+              ? "bg-primary cursor-pointer"
+              : "cursor-default"
+          )}
           type="button"
+          onClick={deployInstanceRequest}
         >
           Deploy
         </button>

@@ -1,11 +1,11 @@
-import { InstanceType, Locations } from "@/data";
+import { InstanceType, Locations, OSTypes } from "@/data";
 import { atom, useAtom } from "jotai";
 
-interface DeployInstance {
+export interface DeployInstance {
   type: InstanceType;
   location: Locations;
-  os: string;
-  plan: string;
+  os: OSTypes;
+  plan: string | null;
 }
 
 const initialInstanceChoice: DeployInstance = {
