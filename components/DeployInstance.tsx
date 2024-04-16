@@ -12,10 +12,12 @@ import {
   instanceTypes,
 } from "@/data";
 import { InstanceLocation, InstanceOS, InstanceTypeComp } from "./dashboard";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { instancePlans } from "@/data/instances/plan";
 import { InstancePlan } from "./dashboard/InstancePlan";
 import { classNames } from "@/utils/styling";
+import { Modal } from "./Modal";
+import { ShowWhen } from "./utils";
 
 export function DeployInstanceButton() {
   const { setShowInstances, showInstances } = useGlobalStates();
@@ -37,6 +39,7 @@ export function DeployInstanceButton() {
 }
 
 export function DeployInstance() {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const { deployInstance } = useGlobalStates();
   const allDeployInstanceFieldsFills = useMemo(
     () => Object.values(deployInstance).every((value) => Boolean(value)),
@@ -45,13 +48,20 @@ export function DeployInstance() {
 
   function deployInstanceRequest() {
     if (!allDeployInstanceFieldsFills) return;
+    setShowPaymentModal(true);
   }
 
   return (
     <div className="w-full h-full flex flex-col overflow-y-auto p-4">
+      <ShowWhen
+        show={<Modal setShowModal={setShowPaymentModal}>Doggie</Modal>}
+        when={showPaymentModal}
+      />
+
       <h1 className="pl-10 py-5 text-left w-full text-4xl font-bold">
         Deploy New Instance
       </h1>
+
       <div className="w-full mt-14">
         <h2 className="text-2xl">Choose Type</h2>
         <div className="flex flex-row gap-x-4 gap-y-2 pt-6 flex-wrap lg:flex-nowrap lg:gap-y-0">

@@ -5,3 +5,4 @@ export * from "./Instances";
 export * from "./ServerTypeToggle";
 export * from "./SelectTick";
 export * from "./dashboard";
+export * from "./Modal";

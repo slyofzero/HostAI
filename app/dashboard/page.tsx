@@ -3,9 +3,11 @@ import {
   DeployInstance,
   DeployInstanceButton,
   Instances,
+  Modal,
   ServerTypeToggle,
   ShowWhen,
 } from "@/components";
+import { SepoliaQrCode } from "@/components/QRCode";
 import { useGlobalStates } from "@/state";
 
 export default function Dashboard() {
