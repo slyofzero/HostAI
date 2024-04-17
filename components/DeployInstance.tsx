@@ -49,6 +49,11 @@ export function DeployInstance() {
   function deployInstanceRequest() {
     if (!allDeployInstanceFieldsFills) return;
     setShowPaymentModal(true);
+
+    fetch("/api/payment", {
+      method: "POST",
+      body: JSON.stringify(deployInstance),
+    });
   }
 
   return (

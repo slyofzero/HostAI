@@ -1,12 +1,6 @@
-import { InstanceType, Locations, OSTypes } from "@/data";
+import { DeployInstance } from "@/types";
 import { atom, useAtom } from "jotai";
-
-export interface DeployInstance {
-  type: InstanceType;
-  location: Locations;
-  os: OSTypes;
-  plan: string | null;
-}
+null;
 
 const initialInstanceChoice: DeployInstance = {
   type: "cloud_compute",
