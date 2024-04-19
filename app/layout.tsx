@@ -1,7 +1,9 @@
 import "./globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { Header } from "@/components";
+import { Providers } from "@/components/blockchain";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -22,8 +24,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={roboto.className}>
         <div className="flex flex-col w-full h-full">
-          <Header />
-          {children}
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
         </div>
       </body>
     </html>

@@ -1,10 +1,36 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { ConnectButton } from "./blockchain";
+import { useAccount, useSignMessage } from "wagmi";
+import { useCallback, useEffect } from "react";
+import { JWTKeyName, signingMessage } from "@/utils/constants";
+import { apiPoster } from "@/utils/api";
+import { JWTResponse } from "@/types";
 
 const navItemStyle =
   "z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 gap-unit-2 rounded-medium [&amp;>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none text-default-foreground data-[hover=true]:opacity-hover bg-transparent text-sm no-underline";
 
 export function Header() {
+  const { address, isConnected } = useAccount();
+  const { signMessageAsync } = useSignMessage();
+
+  const signIn = useCallback(
+    async function signIn() {
+      const signature = await signMessageAsync({ message: signingMessage });
+      const body = { address, signature };
+      const { token } = (await apiPoster<JWTResponse>("/api/auth", body)).data;
+      localStorage.setItem(JWTKeyName, String(token));
+    },
+    [signMessageAsync, address]
+  );
+
+  useEffect(() => {
+    const authToken = localStorage.getItem(JWTKeyName);
+    console.log(authToken);
+    if (isConnected && !authToken) signIn();
+  }, [isConnected, signIn]);
+
   return (
     <div className="navbar absolute flex flex-col sm:items-center items-start sm:justify-center justify-start w-full pt-4 sm:px-0 px-8 z-50">
       <div className="max-w-[1300px] w-full flex items-center justify-center">
@@ -78,6 +104,8 @@ export function Header() {
               <path d="M4 13h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1zm-1 7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v4zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v7zm1-10h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1z"></path>
             </svg>
           </Link>
+
+          <ConnectButton />
         </div>
       </div>
     </div>

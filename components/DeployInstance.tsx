@@ -1,13 +1,10 @@
 "use client";
 import { useGlobalStates } from "@/state";
-import Image from "next/image";
-import { SelectTick } from "./SelectTick";
 import {
   InstanceType,
   Locations,
   OSTypes,
   instanceLocations,
-  instanceOs,
   instanceTypeOS,
   instanceTypes,
 } from "@/data";
