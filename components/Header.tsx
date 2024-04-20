@@ -2,34 +2,39 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ConnectButton } from "./blockchain";
-import { useAccount, useSignMessage } from "wagmi";
 import { useCallback, useEffect } from "react";
 import { JWTKeyName, signingMessage } from "@/utils/constants";
 import { apiPoster } from "@/utils/api";
 import { JWTResponse } from "@/types";
+import { useAuth } from "@/state";
 
 const navItemStyle =
   "z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 h-unit-10 gap-unit-2 rounded-medium [&amp;>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none text-default-foreground data-[hover=true]:opacity-hover bg-transparent text-sm no-underline";
 
 export function Header() {
-  const { address, isConnected } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { address, isConnected, signMessageAsync, setIsSigned } = useAuth();
 
   const signIn = useCallback(
     async function signIn() {
       const signature = await signMessageAsync({ message: signingMessage });
       const body = { address, signature };
       const { token } = (await apiPoster<JWTResponse>("/api/auth", body)).data;
+
       localStorage.setItem(JWTKeyName, String(token));
+      setIsSigned(true);
     },
-    [signMessageAsync, address]
+    [signMessageAsync, address, setIsSigned]
   );
 
   useEffect(() => {
+    setIsSigned(false);
+
     const authToken = localStorage.getItem(JWTKeyName);
-    console.log(authToken);
-    if (isConnected && !authToken) signIn();
-  }, [isConnected, signIn]);
+    if (isConnected) {
+      if (!authToken) signIn();
+      else setIsSigned(true);
+    }
+  }, [isConnected, signIn, setIsSigned]);
 
   return (
     <div className="navbar absolute flex flex-col sm:items-center items-start sm:justify-center justify-start w-full pt-4 sm:px-0 px-8 z-50">

@@ -11,4 +11,6 @@ export interface StoredOrder {
   hash: string;
   sentTo: string;
   paidAt?: Timestamp;
+  toPay: number;
+  user: string;
 }

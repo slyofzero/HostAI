@@ -5,7 +5,7 @@ export function RentModal() {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <Modal setShowModal={setShowModal} showModal={showModal}>
+    <Modal setShowModal={setShowModal}>
       <header
         className="py-4 px-6 flex-initial text-large font-semibold flex flex-col gap-1 mb-4"
         id=":ri:"

@@ -1,10 +1,15 @@
 import { addDocument } from "@/config";
+import { instancePlans } from "@/data/instances/plan";
 import { DeployInstance, StoredOrder } from "@/types";
+import { apiFetcher } from "@/utils/api";
+import { validateAuth } from "@/utils/auth";
+import { ethPriceApi } from "@/utils/constants";
 import { getUnlockedAccount } from "@/utils/web3";
 import { nanoid } from "nanoid";
 
 export async function POST(req: Request) {
   const body = (await req.json()) as DeployInstance;
+  const user = await validateAuth(req);
 
   if (!body.location || !body.os || !body.plan || !body.type)
     return Response.json(
@@ -14,6 +19,9 @@ export async function POST(req: Request) {
 
   const address = await getUnlockedAccount();
   const hash = nanoid(10);
+  const priceUsd = instancePlans[body.type][body.plan].price;
+  const ethPrice = (await apiFetcher<any>(ethPriceApi)).data.price;
+  const toPay = parseFloat((priceUsd / ethPrice).toFixed(8));
 
   addDocument<StoredOrder>({
     collectionName: "orders",
@@ -23,8 +31,10 @@ export async function POST(req: Request) {
       sentTo: address,
       status: "PENDING",
       plan: body.plan,
+      toPay,
+      user,
     },
   });
 
-  return Response.json({ address, hash });
+  return Response.json({ address, hash, toPay });
 }

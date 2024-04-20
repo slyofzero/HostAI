@@ -15,6 +15,7 @@ import { InstancePlan } from "./dashboard/InstancePlan";
 import { classNames } from "@/utils/styling";
 import { Modal } from "./Modal";
 import { ShowWhen } from "./utils";
+import { clientPoster } from "@/utils/api";
 
 export function DeployInstanceButton() {
   const { setShowInstances, showInstances } = useGlobalStates();
@@ -46,11 +47,7 @@ export function DeployInstance() {
   function deployInstanceRequest() {
     if (!allDeployInstanceFieldsFills) return;
     setShowPaymentModal(true);
-
-    fetch("/api/payment", {
-      method: "POST",
-      body: JSON.stringify(deployInstance),
-    });
+    clientPoster("/api/payment", deployInstance);
   }
 
   return (
