@@ -31,7 +31,6 @@ export function InstancePlan(props: Props) {
       <p className="w-full text-sm font-bold">{props.name}</p>
       <p className="w-full text-sm">{props.cores}</p>
       <p className="w-full text-sm">{props.memory}</p>
-      <p className="w-full text-sm">{props.storage}</p>
       <p className="w-full text-sm">{props.bandwidth}</p>
       <p className="w-full text-sm">
         <span className="font-bold">${props.price}/month</span> <br />$

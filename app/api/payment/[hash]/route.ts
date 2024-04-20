@@ -3,14 +3,13 @@ import { web3 } from "@/config/rpc";
 import { StoredOrder } from "@/types";
 import { validateAuth } from "@/utils/auth";
 import { log } from "@/utils/handlers";
-import { sleep } from "@/utils/time";
 
 interface Params {
   hash: string;
 }
 
 export async function GET(req: Request, context: { params: Params }) {
-  await validateAuth(req);
+  const user = await validateAuth(req);
   const { hash } = context.params;
 
   const orderInformation = (
@@ -22,6 +21,11 @@ export async function GET(req: Request, context: { params: Params }) {
 
   if (!orderInformation)
     return Response.json({ message: "No order information" }, { status: 400 });
+  else if (user !== orderInformation.user)
+    return Response.json(
+      { message: "User and order creator mismatch" },
+      { status: 401 }
+    );
 
   const { sentTo, toPay } = orderInformation;
 

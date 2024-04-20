@@ -203,7 +203,7 @@ export function DeployInstance() {
             <p className="w-full text-sm text-zinc-400">Name</p>
             <p className="w-full text-sm text-zinc-400">Cores</p>
             <p className="w-full text-sm text-zinc-400">Memory</p>
-            <p className="w-full text-sm text-zinc-400">Storage</p>
+            {/* <p className="w-full text-sm text-zinc-400">Storage</p> */}
             <p className="w-full text-sm text-zinc-400">Bandwidth</p>
             <p className="w-full text-sm text-zinc-400">Price</p>
           </div>

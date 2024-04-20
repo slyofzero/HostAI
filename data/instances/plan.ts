@@ -4,7 +4,6 @@ export interface PlanDetails {
   name: string;
   cores: string;
   memory: string;
-  storage: string;
   bandwidth: string;
   price: number;
   hourlyRate: number;
@@ -16,61 +15,55 @@ export const instancePlans: {
   cloud_compute: {
     competitor: {
       name: "Competitor",
-      cores: "8-core 3.1GHz",
-      memory: "12GB",
-      storage: "512GB SSD",
-      bandwidth: "1GB",
-      price: 40,
-      hourlyRate: 0.055,
+      cores: "2 vCPUs (virtual CPUs)",
+      memory: "4GB",
+      bandwidth: "5GB",
+      price: 50,
+      hourlyRate: 0.069,
     },
     premium: {
       name: "Premium",
-      cores: "8-core 3.7GHz",
-      memory: "28GB",
-      storage: "512GB SSD",
-      bandwidth: "1GB",
-      price: 65,
-      hourlyRate: 0.089,
+      cores: "2 vCPUs (virtual CPUs)",
+      memory: "8GB",
+      bandwidth: "5GB",
+      price: 75,
+      hourlyRate: 0.1,
     },
   },
   dedicated: {
     basic: {
       name: "Basic",
-      cores: "4-core 8-thread",
+      cores: "4 vCPUs (virtual CPUs)",
       memory: "16GB",
-      storage: "1TB HDD + RAID 1",
-      bandwidth: "1GB",
-      price: 300,
-      hourlyRate: 0.411,
+      bandwidth: "5GB",
+      price: 200,
+      hourlyRate: 0.27,
     },
     premium: {
       name: "Premium",
-      cores: "12-core 24-thread",
-      memory: "64GB",
-      storage: "2TB HDD + RAID 1",
-      bandwidth: "1GB",
-      price: 450,
-      hourlyRate: 0.616,
+      cores: "8 vCPUs (virtual CPUs)",
+      memory: "32GB",
+      bandwidth: "5GB",
+      price: 380,
+      hourlyRate: 0.53,
     },
   },
   gaming: {
     small: {
       name: "Small DataPack",
-      cores: "1 vCPU",
+      cores: "2 vCPU",
       memory: "2GB",
-      storage: "80GB SSD (100GB Block)",
-      bandwidth: "1GB",
-      price: 20,
-      hourlyRate: 0.027,
+      bandwidth: "5GB",
+      price: 30,
+      hourlyRate: 0.0417,
     },
     big: {
       name: "Big DataPack",
-      cores: "4 vCPU",
+      cores: "2 vCPU",
       memory: "8GB",
-      storage: "80GB SSD (100GB Block)",
-      bandwidth: "1GB",
-      price: 60,
-      hourlyRate: 0.082,
+      bandwidth: "5GB",
+      price: 55,
+      hourlyRate: 0.076,
     },
   },
 };
