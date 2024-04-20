@@ -54,3 +54,14 @@ body {
   ); /* Set a semi-transparent background color */
   backdrop-filter: blur(5px); /* Apply a blur effect */
 }
+
+.shadow-input,
+.shadow-large {
+  box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-shadow) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+}
+
+.input-field {
+  @apply flex h-10 w-full border-none bg-zinc-800 text-white shadow-input rounded-md px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-600 disabled:cursor-not-allowed disabled:opacity-50 shadow-[0px_0px_1px_1px_var(--neutral-700)];
+}

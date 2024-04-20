@@ -34,6 +34,7 @@ export async function POST(req: Request) {
       toPay,
       user,
     },
+    id: hash,
   });
 
   return Response.json({ address, hash, toPay });

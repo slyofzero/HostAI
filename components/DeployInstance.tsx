@@ -9,13 +9,16 @@ import {
   instanceTypes,
 } from "@/data";
 import { InstanceLocation, InstanceOS, InstanceTypeComp } from "./dashboard";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { instancePlans } from "@/data/instances/plan";
 import { InstancePlan } from "./dashboard/InstancePlan";
-import { classNames } from "@/utils/styling";
+import { classNames, primaryBtnClass } from "@/utils/styling";
 import { Modal } from "./Modal";
 import { ShowWhen } from "./utils";
-import { clientPoster } from "@/utils/api";
+import { clientFetcher, clientPoster } from "@/utils/api";
+import { roundUpToDecimalPlace } from "@/utils/general";
+import { StoredOrder } from "@/types";
+import { sleep } from "@/utils/time";
 
 export function DeployInstanceButton() {
   const { setShowInstances, showInstances } = useGlobalStates();
@@ -36,26 +39,128 @@ export function DeployInstanceButton() {
   );
 }
 
+interface PaymentDetail {
+  address: string;
+  hash: string;
+  toPay: number;
+}
+
+interface PaymentVerificationDetail {
+  message: string;
+  order: StoredOrder;
+}
+
 export function DeployInstance() {
+  const [paymentDetail, setPaymentDetail] = useState<PaymentDetail | null>();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<
+    "verifying" | "verified" | "failed" | "deploying" | null
+  >();
   const { deployInstance } = useGlobalStates();
   const allDeployInstanceFieldsFills = useMemo(
     () => Object.values(deployInstance).every((value) => Boolean(value)),
     [deployInstance]
   );
 
-  function deployInstanceRequest() {
+  async function deployInstanceRequest() {
     if (!allDeployInstanceFieldsFills) return;
+    setPaymentStatus("deploying");
+    const data = (
+      await clientPoster<PaymentDetail>("/api/payment", deployInstance)
+    ).data;
+
+    setPaymentDetail(data);
     setShowPaymentModal(true);
-    clientPoster("/api/payment", deployInstance);
   }
+
+  async function verifyPayment() {
+    if (paymentStatus && paymentStatus !== "deploying") return;
+
+    setPaymentStatus("verifying");
+    let attempt = 0;
+
+    for (const attempt_number of Array.from(Array(20).keys())) {
+      attempt = attempt_number + 1;
+      console.log(`Attempt ${attempt}`);
+      const data = await clientFetcher<PaymentVerificationDetail>(
+        `/api/payment/${paymentDetail?.hash}`
+      );
+
+      if (data.response === 200) break;
+      await sleep(5000);
+    }
+
+    if (attempt < 20) {
+      setPaymentStatus("verified");
+      await sleep(5000);
+      setShowPaymentModal(false);
+    } else setPaymentStatus("failed");
+  }
+
+  const paymentModal = (
+    <Modal setShowModal={setShowPaymentModal}>
+      <div className="flex flex-col space-y-2 w-full mb-4">
+        <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          Address
+        </label>
+        <div
+          className="p-[2px] rounded-lg transition duration-300 group/input"
+          style={{
+            background:
+              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+          }}
+        >
+          <input
+            className="input-field"
+            id="address"
+            value={paymentDetail?.address}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col space-y-2 w-full mb-4">
+        <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          To Pay
+        </label>
+        <div
+          className="p-[2px] rounded-lg transition duration-300 group/input"
+          style={{
+            background:
+              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+          }}
+        >
+          <input
+            className="input-field"
+            id="address"
+            value={roundUpToDecimalPlace(paymentDetail?.toPay, 3)}
+          />
+        </div>
+      </div>
+
+      <div>
+        Send the above address {roundUpToDecimalPlace(paymentDetail?.toPay, 3)}{" "}
+        ETH and then click on &quot;I have paid&quot; after sending. Your
+        payment should be verified in less than a minute.
+      </div>
+
+      <button
+        onClick={verifyPayment}
+        className={classNames(primaryBtnClass, "mt-4 mx-auto")}
+      >
+        {paymentStatus === "verifying"
+          ? "Checking..."
+          : paymentStatus === "verified"
+          ? "Verified"
+          : paymentStatus === "failed"
+          ? "Failed"
+          : "I have paid"}
+      </button>
+    </Modal>
+  );
 
   return (
     <div className="w-full h-full flex flex-col overflow-y-auto p-4">
-      <ShowWhen
-        show={<Modal setShowModal={setShowPaymentModal}>Doggie</Modal>}
-        when={showPaymentModal}
-      />
+      <ShowWhen show={paymentModal} when={showPaymentModal} />
 
       <h1 className="pl-10 py-5 text-left w-full text-4xl font-bold">
         Deploy New Instance
@@ -122,7 +227,7 @@ export function DeployInstance() {
           type="button"
           onClick={deployInstanceRequest}
         >
-          Deploy
+          {paymentStatus === "deploying" ? "Preparing..." : "Deploy"}
         </button>
       </div>
     </div>
