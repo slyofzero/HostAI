@@ -71,14 +71,6 @@ export function Header() {
             className={navItemStyle}
             role="button"
             tabIndex={0}
-            href="/pricing"
-          >
-            Pricing
-          </Link>
-          <Link
-            className={navItemStyle}
-            role="button"
-            tabIndex={0}
             href="/use-case"
           >
             Use Case
