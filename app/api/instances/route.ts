@@ -11,10 +11,7 @@ export async function GET(req: Request) {
 
   const instances = await getDocument<StoredInstance>({
     collectionName: "instances",
-    queries: [
-      ["user", "==", user],
-      ["status", "==", "ACTIVE"],
-    ],
+    queries: [["user", "==", user]],
   });
 
   return Response.json({ instances });

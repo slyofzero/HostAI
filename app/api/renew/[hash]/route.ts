@@ -120,10 +120,23 @@ export async function GET(req: Request, context: { params: Params }) {
 
     if (!started) {
       return Response.json(
-        { message: `Couldn't start instance for hash ${hash}` },
+        { message: `Couldn't start instanceId ${instance.instanceId}` },
         { status: 400 }
       );
     }
+  }
+
+  let terminatesAt = new Timestamp(
+    instance.terminatesAt.seconds + 30 * 24 * 60 * 60,
+    instance.terminatesAt.nanoseconds
+  );
+
+  if (instance.status === "STOPPED") {
+    const currentTimestamp = Timestamp.now();
+    terminatesAt = new Timestamp(
+      currentTimestamp.seconds + 30 * 24 * 60 * 60,
+      currentTimestamp.nanoseconds
+    );
   }
 
   updateDocumentById<StoredInstance>({
@@ -131,10 +144,7 @@ export async function GET(req: Request, context: { params: Params }) {
     id: instance.id || "",
     updates: {
       status: "ACTIVE",
-      terminatesAt: new Timestamp(
-        instance.terminatesAt.seconds + 30 * 24 * 60 * 60,
-        instance.terminatesAt.nanoseconds
-      ),
+      terminatesAt,
     },
   });
 
