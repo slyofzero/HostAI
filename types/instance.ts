@@ -3,7 +3,6 @@ import { Timestamp } from "firebase-admin/firestore";
 
 export interface StoredInstance {
   id?: string;
-  serverType: string;
   hash: string;
   user: string;
   status: "ACTIVE" | "TERMINATED";
@@ -11,4 +10,8 @@ export interface StoredInstance {
   plan: string;
   type: InstanceType;
   location: Locations;
+  instanceId: string;
+  keypair: string;
+  sshCommand: string;
+  serverType: string;
 }

@@ -78,7 +78,7 @@ export async function createInstance(ec2: EC2, orderInformation: StoredOrder) {
 
     const sshCommand = `ssh -i "${keypair}" ubuntu@${dnsName}`;
 
-    return { instanceId, keypair, sshCommand, InstanceType };
+    return { instanceId, keypair, sshCommand, serverType: InstanceType };
   } catch (error) {
     const err = error as Error;
     console.log(err, err.stack);

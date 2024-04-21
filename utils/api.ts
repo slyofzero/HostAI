@@ -27,6 +27,37 @@ export async function clientFetcher<T>(url: string) {
   return { response: response.status, data };
 }
 
+export async function clientFileDownload(url: string, fileName: string) {
+  const token = localStorage.getItem(JWTKeyName) || ""; // Ensure this matches the key used to store the token
+  const headers = new Headers();
+  headers.append("authorization", token);
+
+  try {
+    const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.blob(); // Get the data as a blob
+    const downloadUrl = window.URL.createObjectURL(data); // Create a URL for the blob
+
+    const a = document.createElement("a"); // Create a link element
+    a.href = downloadUrl; // Set the href to the blob URL
+    a.download = fileName; // Set the default filename for the download
+    document.body.appendChild(a); // Append the link to the document
+    a.click(); // Simulate a click to start the download
+
+    window.URL.revokeObjectURL(downloadUrl); // Clean up the blob URL
+    document.body.removeChild(a); // Remove the link element from the document
+  } catch (error) {
+    console.error("Download failed:", error);
+    return { response: "Download failed" };
+  }
+
+  return { response: "Download successful" };
+}
+
 export async function clientPoster<T>(url: string, body: any) {
   const token = localStorage.getItem(JWTKeyName) || "";
   const headers = new Headers();

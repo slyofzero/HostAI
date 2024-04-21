@@ -2,11 +2,13 @@
 import { useApi } from "@/hooks";
 import { DeployInstanceButton } from "./DeployInstance";
 import { StoredInstance } from "@/types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ShowWhen } from "./utils";
 import { classNames } from "@/utils/styling";
 import { instanceLocations } from "@/data";
 import moment from "moment";
+import { Modal } from "./Modal";
+import { clientFileDownload } from "@/utils/api";
 
 interface SWRResponse {
   instances: StoredInstance[];
@@ -18,27 +20,79 @@ interface Props {
 
 export function Instance({ instance }: Props) {
   const location = instanceLocations[instance.location].title;
-  const date = new Date(instance.terminatesAt.seconds * 1000); // Convert seconds to milliseconds
-  const terminatesAt = moment(date).format("DD-MM-YYYY");
+  // @ts-ignore
+  const date = new Date(instance.terminatesAt._seconds * 1000); // Convert seconds to milliseconds
+  const terminatesAt = moment(date).format("DD/MM/YYYY");
+
+  const [showInstanceModal, setShowInstanceModal] = useState(false);
+  const onClick = () => {
+    setShowInstanceModal(true);
+  };
+
+  function downloadKeyPair() {
+    clientFileDownload(`/api/keyPair/${instance.hash}`, instance.keypair);
+  }
+
+  const instanceModal = (
+    <Modal size="lg" setShowModal={setShowInstanceModal}>
+      <div className="flex flex-col space-y-2 w-full mb-4">
+        <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          SSH Command
+        </label>
+        <div
+          className="p-[2px] rounded-lg transition duration-300 group/input"
+          style={{
+            background:
+              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+          }}
+        >
+          <div className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm">
+            {instance.sshCommand}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-4 items-center">
+        <span className="whitespace-nowrap">Key Pair -</span>
+
+        <button
+          onClick={downloadKeyPair}
+          className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm"
+        >
+          {instance.keypair}
+        </button>
+
+        <span className="text-sm">
+          Download the keypair and keep it safe as you won&apos;t be able to
+          download it again.
+        </span>
+      </div>
+    </Modal>
+  );
 
   return (
-    <div
-      className={classNames(
-        "flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer bg-opacity-50 transition-colors"
-      )}
-    >
-      <p className="w-full text-sm font-bold capitalize">{instance.type}</p>
-      <p className="w-full text-sm capitalize">{instance.plan}</p>
-      <p className="w-full text-sm capitalize">{location}</p>
-      <p className="w-full text-sm">{instance.status}</p>
-      <p className="w-full text-sm">{terminatesAt}</p>
-      <p className="w-full text-sm">{instance.hash}.pem</p>
+    <>
+      <ShowWhen show={instanceModal} when={showInstanceModal} />
 
-      {/* <p className="w-full text-sm">
+      <div
+        onClick={onClick}
+        className={classNames(
+          "flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer bg-opacity-50 transition-colors"
+        )}
+      >
+        <p className="w-full text-sm font-bold capitalize">{instance.type}</p>
+        <p className="w-full text-sm capitalize">{instance.plan}</p>
+        <p className="w-full text-sm capitalize">{location}</p>
+        <p className="w-full text-sm">{instance.status}</p>
+        <p className="w-full text-sm">{terminatesAt}</p>
+        <p className="w-full text-sm">{instance.hash}.pem</p>
+
+        {/* <p className="w-full text-sm">
         <span className="font-bold">${props.price}/month</span> <br />$
         {props.hourlyRate}/hour
       </p> */}
-    </div>
+      </div>
+    </>
   );
 }
 

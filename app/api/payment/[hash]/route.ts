@@ -69,7 +69,6 @@ export async function GET(req: Request, context: { params: Params }) {
     collectionName: "instances",
     data: {
       hash,
-      serverType: instance.InstanceType,
       status: "ACTIVE",
       user,
       location,
@@ -79,6 +78,7 @@ export async function GET(req: Request, context: { params: Params }) {
         currentTimestamp.seconds + 30 * 24 * 60 * 60,
         currentTimestamp.nanoseconds
       ),
+      ...instance,
     },
   });
 

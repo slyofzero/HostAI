@@ -1,12 +1,14 @@
+import { classNames } from "@/utils/styling";
 import { SetStateAction } from "jotai";
 import { Dispatch, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
   setShowModal: Dispatch<SetStateAction<boolean>>;
+  size?: "md" | "lg";
 }
 
-export function Modal({ children, setShowModal }: Props) {
+export function Modal({ children, setShowModal, size }: Props) {
   function onClick() {
     setShowModal((prev) => !prev);
   }
@@ -27,7 +29,10 @@ export function Modal({ children, setShowModal }: Props) {
         <section
           role="dialog"
           tabIndex={-1}
-          className="flex flex-col relative z-50 box-border outline-none my-1 sm:mx-6 sm:my-16 shadow-small overflow-y-hidden max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-neutral-900"
+          className={classNames(
+            "flex flex-col relative z-50 box-border outline-none my-1 sm:mx-6 sm:my-16 shadow-small overflow-y-hidden w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-neutral-900",
+            size === "lg" ? "max-w-[40rem]" : "max-w-md"
+          )}
           id=":rh:"
           data-open="true"
           data-dismissable="true"
