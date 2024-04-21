@@ -52,10 +52,10 @@ export async function clientFileDownload(url: string, fileName: string) {
     document.body.removeChild(a); // Remove the link element from the document
   } catch (error) {
     console.error("Download failed:", error);
-    return { response: "Download failed" };
+    return { response: 400 };
   }
 
-  return { response: "Download successful" };
+  return { response: 200 };
 }
 
 export async function clientPoster<T>(url: string, body: any) {

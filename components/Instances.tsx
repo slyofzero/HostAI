@@ -4,7 +4,7 @@ import { DeployInstanceButton } from "./DeployInstance";
 import { StoredInstance } from "@/types";
 import { useMemo, useState } from "react";
 import { ShowWhen } from "./utils";
-import { classNames } from "@/utils/styling";
+import { classNames, primaryBtnClass } from "@/utils/styling";
 import { instanceLocations } from "@/data";
 import moment from "moment";
 import { Modal } from "./Modal";
@@ -21,51 +21,103 @@ interface Props {
 export function Instance({ instance }: Props) {
   const location = instanceLocations[instance.location].title;
   // @ts-ignore
-  const date = new Date(instance.terminatesAt._seconds * 1000); // Convert seconds to milliseconds
+  const terminationDate = instance.terminatesAt._seconds * 1000;
+  const date = new Date(terminationDate); // Convert seconds to milliseconds
   const terminatesAt = moment(date).format("DD/MM/YYYY");
+  const [fileMsg, setFileMsg] = useState("");
+  const differenceInDays = moment(terminationDate).fromNow();
 
   const [showInstanceModal, setShowInstanceModal] = useState(false);
   const onClick = () => {
     setShowInstanceModal(true);
   };
 
-  function downloadKeyPair() {
-    clientFileDownload(`/api/keyPair/${instance.hash}`, instance.keypair);
+  async function downloadKeyPair() {
+    const res = (
+      await clientFileDownload(
+        `/api/keyPair/${instance.hash}`,
+        instance.keypair
+      )
+    ).response;
+
+    console.log(res);
+
+    if (res === 400) setFileMsg("File already downloaded");
   }
+
+  async function renewPayment() {}
 
   const instanceModal = (
     <Modal size="lg" setShowModal={setShowInstanceModal}>
-      <div className="flex flex-col space-y-2 w-full mb-4">
-        <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          SSH Command
-        </label>
-        <div
-          className="p-[2px] rounded-lg transition duration-300 group/input"
-          style={{
-            background:
-              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
-          }}
-        >
-          <div className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm">
-            {instance.sshCommand}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col space-y-2 w-full mb-4">
+          <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            SSH Command
+          </label>
+          <div
+            className="p-[2px] rounded-lg transition duration-300 group/input"
+            style={{
+              background:
+                "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+            }}
+          >
+            <div className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm">
+              {instance.sshCommand}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex gap-4 items-center">
-        <span className="whitespace-nowrap">Key Pair -</span>
+        <div className="flex gap-4 items-center">
+          <span className="whitespace-nowrap">Key Pair -</span>
+
+          <button
+            onClick={downloadKeyPair}
+            className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm"
+          >
+            {instance.keypair}
+          </button>
+
+          <span
+            className={classNames("text-sm", fileMsg ? "text-red-500" : "")}
+          >
+            {fileMsg ? (
+              fileMsg
+            ) : (
+              <span className="hidden md:block">
+                Download the keypair and keep it safe as you won&apos;t be able
+                to download it again.
+              </span>
+            )}
+          </span>
+        </div>
+
+        <ShowWhen
+          show={
+            <div className="mt-4">
+              Your server would stop <strong>{differenceInDays}</strong>. Upon
+              stopping you won&apos;t be able to use your server, but the data
+              on the server will persist. You may go back to using the server by
+              renewing your subscription.
+              <br />
+              <br />
+              Renew before the expiration date to avoid any disruptions.
+            </div>
+          }
+          when={instance.status === "ACTIVE"}
+          otherwise={
+            <div className="mt-4 text-red-500">
+              Your subscription has expired and your server has been stopped. To
+              resume using the server, renew your subscription now!
+            </div>
+          }
+        />
 
         <button
-          onClick={downloadKeyPair}
-          className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm"
+          onClick={renewPayment}
+          className={classNames(primaryBtnClass, "mt-4 mx-auto")}
         >
-          {instance.keypair}
+          Renew
         </button>
-
-        <span className="text-sm">
-          Download the keypair and keep it safe as you won&apos;t be able to
-          download it again.
-        </span>
       </div>
     </Modal>
   );
