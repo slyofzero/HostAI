@@ -14,5 +14,5 @@ export interface StoredOrder {
   toPay: number;
   user: string;
   renewalPay?: number;
-  renewalStatus: "PENDING" | "PAID";
+  renewalStatus?: "PENDING" | "PAID";
 }
