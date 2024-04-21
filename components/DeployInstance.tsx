@@ -53,14 +53,19 @@ interface PaymentVerificationDetail {
 export function DeployInstance() {
   const [paymentDetail, setPaymentDetail] = useState<PaymentDetail | null>();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const { setShowInstances } = useGlobalStates();
   const [paymentStatus, setPaymentStatus] = useState<
-    "verifying" | "verified" | "failed" | "deploying" | null
+    "verifying" | "verified" | "failed" | "deploying" | "rejected" | null
   >();
   const { deployInstance } = useGlobalStates();
   const allDeployInstanceFieldsFills = useMemo(
     () => Object.values(deployInstance).every((value) => Boolean(value)),
     [deployInstance]
   );
+
+  useEffect(() => {
+    if (!showPaymentModal) setPaymentStatus("rejected");
+  }, [showPaymentModal]);
 
   async function deployInstanceRequest() {
     if (!allDeployInstanceFieldsFills) return;
@@ -93,6 +98,7 @@ export function DeployInstance() {
     if (attempt < 20) {
       setPaymentStatus("verified");
       await sleep(5000);
+      setShowInstances(true);
       setShowPaymentModal(false);
     } else setPaymentStatus("failed");
   }

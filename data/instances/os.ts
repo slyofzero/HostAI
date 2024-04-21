@@ -1,6 +1,6 @@
 import { InstanceType } from "./types";
 
-export type OSTypes = "ubuntu" | "windows";
+export type OSTypes = "ubuntu";
 
 export interface OSDetails {
   icon: string;
@@ -12,10 +12,6 @@ export const instanceOs: { [K in OSTypes]: OSDetails } = {
     icon: "./ubuntu.svg",
     title: "Ubuntu",
   },
-  windows: {
-    icon: "./windows.svg",
-    title: "Windows",
-  },
 };
 
 export const instanceTypeOS: {
@@ -24,5 +20,5 @@ export const instanceTypeOS: {
   cloud_compute: instanceOs,
   dedicated: instanceOs,
   // @ts-ignore
-  gaming: { windows: instanceOs.windows },
+  gaming: instanceOs,
 };

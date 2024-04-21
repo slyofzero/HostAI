@@ -18,23 +18,23 @@ export const ec2Instances: {
 };
 
 export const amiIds: {
-  [K in Locations]: { [K in OSTypes]: string };
+  [K in Locations]: { [K in "ami" | "security"]: string };
 } = {
   us: {
-    ubuntu: "ami-080e1f13689e07408",
-    windows: "ami-0f496107db66676ff",
+    ami: "ami-080e1f13689e07408",
+    security: "sg-017cd9a7a44c0abca",
   },
   uk: {
-    ubuntu: "ami-0b9932f4918a00c4f",
-    windows: "ami-04ae4ddfe3f32eb6e",
+    ami: "ami-0b9932f4918a00c4f",
+    security: "sg-0ef4339f297aeedb1",
   },
   fr: {
-    ubuntu: "ami-00c71bd4d220aa22a",
-    windows: "ami-04418b7c615547159",
+    ami: "ami-00c71bd4d220aa22a",
+    security: "sg-089aaced8831f44b9",
   },
   sp: {
-    ubuntu: "ami-06c4be2792f419b7b",
-    windows: "ami-0a3ff097090be9c13",
+    ami: "ami-06c4be2792f419b7b",
+    security: "sg-07d22ba48e2c86694",
   },
 };
 
@@ -42,5 +42,5 @@ export const awsLocations: { [K in Locations]: string } = {
   us: "us-east-1",
   uk: "eu-west-2",
   fr: "eu-west-3",
-  sp: "api-southeast-1",
+  sp: "ap-southeast-1",
 };

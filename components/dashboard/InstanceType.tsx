@@ -17,17 +17,7 @@ export function InstanceTypeComp({ icon, title, description, type }: Props) {
     [deployInstance, type]
   );
   function onClick() {
-    setDeployInstance((prev) => {
-      let newStateValue = structuredClone(prev);
-
-      if (type === "gaming") {
-        newStateValue = { ...newStateValue, os: "windows" };
-      } else if (prev.type === "gaming") {
-        newStateValue = { ...newStateValue, os: "ubuntu" };
-      }
-
-      return { ...newStateValue, type, plan: null };
-    });
+    setDeployInstance((prev) => ({ ...prev, type, plan: null }));
   }
 
   return (

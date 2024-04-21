@@ -1,8 +1,13 @@
-import { getDocument, updateDocumentById } from "@/config";
+import { addDocument, getDocument, updateDocumentById } from "@/config";
 import { web3 } from "@/config/rpc";
-import { StoredOrder } from "@/types";
+import { StoredInstance, StoredOrder } from "@/types";
 import { validateAuth } from "@/utils/auth";
 import { log } from "@/utils/handlers";
+import { createInstance } from "@/utils/aws";
+import { AWS_ACCESS_KEY, AWS_ACCESS_KEY_ID } from "@/utils/env";
+import AWS from "aws-sdk";
+import { awsLocations } from "@/data/aws";
+import { Timestamp } from "firebase-admin/firestore";
 
 interface Params {
   hash: string;
@@ -27,7 +32,7 @@ export async function GET(req: Request, context: { params: Params }) {
       { status: 401 }
     );
 
-  const { sentTo, toPay } = orderInformation;
+  const { sentTo, toPay, location, id: orderId } = orderInformation;
 
   // ---------- Checking payment ----------
   const balance = await web3.eth.getBalance(sentTo);
@@ -37,11 +42,45 @@ export async function GET(req: Request, context: { params: Params }) {
     return Response.json({ message: "Payment not verified" }, { status: 402 });
   }
 
+  const currentTimestamp = Timestamp.now();
   updateDocumentById<StoredOrder>({
     collectionName: "orders",
-    updates: { status: "PAID" },
-    id: orderInformation.id || "",
+    updates: { status: "PAID", paidAt: currentTimestamp },
+    id: orderId || "",
   });
 
-  return Response.json({ message: "Success", order: orderInformation });
+  // ---------- Creating instance ----------
+  AWS.config.update({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_ACCESS_KEY,
+    region: awsLocations[location],
+  });
+
+  const ec2 = new AWS.EC2();
+  const instance = await createInstance(ec2, orderInformation);
+
+  if (!instance)
+    return Response.json(
+      { message: "Error in creating an instance" },
+      { status: 400 }
+    );
+
+  addDocument<StoredInstance>({
+    collectionName: "instances",
+    data: {
+      hash,
+      serverType: instance.InstanceType,
+      status: "ACTIVE",
+      user,
+      location,
+      plan: orderInformation.plan,
+      type: orderInformation.type,
+      terminatesAt: new Timestamp(
+        currentTimestamp.seconds + 30 * 24 * 60 * 60,
+        currentTimestamp.nanoseconds
+      ),
+    },
+  });
+
+  return Response.json({ message: "Success", instance });
 }

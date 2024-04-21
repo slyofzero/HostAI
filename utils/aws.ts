@@ -25,7 +25,6 @@ async function createKeyPair(ec2: EC2, KeyName: string) {
     const keyPath = path.join(tempDir, keyPair);
 
     if (data.KeyMaterial) {
-      console.log(keyPath);
       fs.writeFileSync(keyPath, data.KeyMaterial);
     } // Save the key pair file
 
@@ -38,12 +37,12 @@ async function createKeyPair(ec2: EC2, KeyName: string) {
 }
 
 export async function createInstance(ec2: EC2, orderInformation: StoredOrder) {
-  const { hash, plan, type, os, location } = orderInformation;
+  const { hash, plan, type, location } = orderInformation;
   const keypair = await createKeyPair(ec2, hash);
 
   if (!keypair) return null;
 
-  const ImageId = amiIds[location][os];
+  const { ami: ImageId, security: SecurityGroupId } = amiIds[location];
   const InstanceType = ec2Instances[type][plan];
 
   const params: RunInstancesRequest = {
@@ -52,6 +51,7 @@ export async function createInstance(ec2: EC2, orderInformation: StoredOrder) {
     KeyName: hash,
     MinCount: 1,
     MaxCount: 1,
+    SecurityGroupIds: [SecurityGroupId],
     TagSpecifications: [
       {
         ResourceType: "instance",
@@ -67,10 +67,18 @@ export async function createInstance(ec2: EC2, orderInformation: StoredOrder) {
 
   try {
     const data = await ec2.runInstances(params).promise();
-    const instanceId = data.Instances?.[0].InstanceId;
-    const sshCommand = `ssh -i "${keypair}" ec2-user@${instanceId}`;
+    const instanceId = data.Instances?.[0].InstanceId || "";
 
-    return { instanceId, keypair, sshCommand };
+    const instanceData = await ec2
+      .describeInstances({ InstanceIds: [instanceId] })
+      .promise();
+
+    const dnsName =
+      instanceData.Reservations?.at(0)?.Instances?.at(0)?.PublicDnsName;
+
+    const sshCommand = `ssh -i "${keypair}" ubuntu@${dnsName}`;
+
+    return { instanceId, keypair, sshCommand, InstanceType };
   } catch (error) {
     const err = error as Error;
     console.log(err, err.stack);
