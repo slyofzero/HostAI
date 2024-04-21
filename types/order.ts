@@ -13,4 +13,6 @@ export interface StoredOrder {
   paidAt?: Timestamp;
   toPay: number;
   user: string;
+  renewalPay?: number;
+  renewalStatus: "PENDING" | "PAID";
 }

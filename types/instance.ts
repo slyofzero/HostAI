@@ -5,7 +5,7 @@ export interface StoredInstance {
   id?: string;
   hash: string;
   user: string;
-  status: "ACTIVE" | "TERMINATED";
+  status: "ACTIVE" | "STOPPED";
   terminatesAt: Timestamp;
   plan: string;
   type: InstanceType;

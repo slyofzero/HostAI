@@ -12,13 +12,15 @@ import { InstanceLocation, InstanceOS, InstanceTypeComp } from "./dashboard";
 import { useEffect, useMemo, useState } from "react";
 import { instancePlans } from "@/data/instances/plan";
 import { InstancePlan } from "./dashboard/InstancePlan";
-import { classNames, primaryBtnClass } from "@/utils/styling";
-import { Modal } from "./Modal";
+import { classNames } from "@/utils/styling";
 import { ShowWhen } from "./utils";
 import { clientFetcher, clientPoster } from "@/utils/api";
-import { roundUpToDecimalPlace } from "@/utils/general";
-import { StoredOrder } from "@/types";
 import { sleep } from "@/utils/time";
+import {
+  PaymentDetail,
+  PaymentModal,
+  PaymentVerificationDetail,
+} from "./Modal/PaymentModal";
 
 export function DeployInstanceButton() {
   const { setShowInstances, showInstances } = useGlobalStates();
@@ -37,17 +39,6 @@ export function DeployInstanceButton() {
       <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></span>
     </button>
   );
-}
-
-interface PaymentDetail {
-  address: string;
-  hash: string;
-  toPay: number;
-}
-
-interface PaymentVerificationDetail {
-  message: string;
-  order: StoredOrder;
 }
 
 export function DeployInstance() {
@@ -103,70 +94,26 @@ export function DeployInstance() {
     } else setPaymentStatus("failed");
   }
 
-  const paymentModal = (
-    <Modal setShowModal={setShowPaymentModal}>
-      <div className="flex flex-col space-y-2 w-full mb-4">
-        <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Address
-        </label>
-        <div
-          className="p-[2px] rounded-lg transition duration-300 group/input"
-          style={{
-            background:
-              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
-          }}
-        >
-          <input
-            className="input-field"
-            id="address"
-            value={paymentDetail?.address}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col space-y-2 w-full mb-4">
-        <label className="text-sm font-medium text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          To Pay
-        </label>
-        <div
-          className="p-[2px] rounded-lg transition duration-300 group/input"
-          style={{
-            background:
-              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
-          }}
-        >
-          <input
-            className="input-field"
-            id="address"
-            value={roundUpToDecimalPlace(paymentDetail?.toPay, 3)}
-          />
-        </div>
-      </div>
-
-      <div>
-        Send the above address {roundUpToDecimalPlace(paymentDetail?.toPay, 3)}{" "}
-        ETH and then click on &quot;I have paid&quot; after sending. Your
-        payment should be verified in less than a minute.
-      </div>
-
-      <button
-        onClick={verifyPayment}
-        className={classNames(primaryBtnClass, "mt-4 mx-auto")}
-      >
-        {paymentStatus === "verifying"
-          ? "Checking..."
-          : paymentStatus === "verified"
-          ? "Verified"
-          : paymentStatus === "failed"
-          ? "Failed"
-          : "I have paid"}
-      </button>
-    </Modal>
-  );
+  const verifyPaymentBtnText = useMemo(() => {
+    if (paymentStatus === "verifying") return "Checking...";
+    else if (paymentStatus === "verified") return "Verified";
+    else if (paymentStatus === "failed") return "Failed";
+    else return "I have paid";
+  }, [paymentStatus]);
 
   return (
     <div className="w-full h-full flex flex-col overflow-y-auto p-4">
-      <ShowWhen show={paymentModal} when={showPaymentModal} />
+      <ShowWhen
+        show={
+          <PaymentModal
+            setShowPaymentModal={setShowPaymentModal}
+            verifyPayment={verifyPayment}
+            paymentDetail={paymentDetail}
+            btnText={verifyPaymentBtnText}
+          />
+        }
+        when={showPaymentModal}
+      />
 
       <h1 className="pl-10 py-5 text-left w-full text-4xl font-bold">
         Deploy New Instance

@@ -58,14 +58,14 @@ export async function clientFileDownload(url: string, fileName: string) {
   return { response: 200 };
 }
 
-export async function clientPoster<T>(url: string, body: any) {
+export async function clientPoster<T>(url: string, body?: any) {
   const token = localStorage.getItem(JWTKeyName) || "";
   const headers = new Headers();
   headers.append("authorization", token);
 
   const response = await fetch(url, {
     method: "POST",
-    body: JSON.stringify(body),
+    body: JSON.stringify(body || {}),
     headers,
   });
   const data = (await response.json()) as T;

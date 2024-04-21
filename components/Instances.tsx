@@ -8,7 +8,9 @@ import { classNames, primaryBtnClass } from "@/utils/styling";
 import { instanceLocations } from "@/data";
 import moment from "moment";
 import { Modal } from "./Modal";
-import { clientFileDownload } from "@/utils/api";
+import { clientFetcher, clientFileDownload, clientPoster } from "@/utils/api";
+import { PaymentModal, PaymentVerificationDetail } from "./Modal/PaymentModal";
+import { sleep } from "@/utils/time";
 
 interface SWRResponse {
   instances: StoredInstance[];
@@ -16,6 +18,12 @@ interface SWRResponse {
 
 interface Props {
   instance: StoredInstance;
+}
+
+interface PaymentDetail {
+  address: string;
+  hash: string;
+  toPay: number;
 }
 
 export function Instance({ instance }: Props) {
@@ -27,7 +35,12 @@ export function Instance({ instance }: Props) {
   const [fileMsg, setFileMsg] = useState("");
   const differenceInDays = moment(terminationDate).fromNow();
 
+  const [paymentDetail, setPaymentDetail] = useState<PaymentDetail | null>();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showInstanceModal, setShowInstanceModal] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<
+    "verifying" | "verified" | "failed" | "deploying" | "rejected" | null
+  >();
   const onClick = () => {
     setShowInstanceModal(true);
   };
@@ -45,7 +58,24 @@ export function Instance({ instance }: Props) {
     if (res === 400) setFileMsg("File already downloaded");
   }
 
-  async function renewPayment() {}
+  async function renewPayment() {
+    setPaymentStatus("deploying");
+
+    const data = (
+      await clientPoster<PaymentDetail>(`/api/renew/${instance.hash}`)
+    ).data;
+
+    setPaymentDetail(data);
+    setShowInstanceModal(false);
+    setShowPaymentModal(true);
+  }
+
+  const verifyPaymentBtnText = useMemo(() => {
+    if (paymentStatus === "verifying") return "Checking...";
+    else if (paymentStatus === "verified") return "Verified";
+    else if (paymentStatus === "failed") return "Failed";
+    else return "I have paid";
+  }, [paymentStatus]);
 
   const instanceModal = (
     <Modal size="lg" setShowModal={setShowInstanceModal}>
@@ -84,8 +114,8 @@ export function Instance({ instance }: Props) {
               fileMsg
             ) : (
               <span className="hidden md:block">
-                Download the keypair and keep it safe as you won&apos;t be able
-                to download it again.
+                Click to download the keypair. Keep it safe as you won&apos;t be
+                able to download it again.
               </span>
             )}
           </span>
@@ -116,15 +146,51 @@ export function Instance({ instance }: Props) {
           onClick={renewPayment}
           className={classNames(primaryBtnClass, "mt-4 mx-auto")}
         >
-          Renew
+          {paymentStatus === "deploying" ? "Preparing..." : "Renew"}
         </button>
       </div>
     </Modal>
   );
 
+  async function verifyPayment() {
+    if (paymentStatus && paymentStatus !== "deploying") return;
+
+    setPaymentStatus("verifying");
+    let attempt = 0;
+
+    for (const attempt_number of Array.from(Array(20).keys())) {
+      attempt = attempt_number + 1;
+      console.log(`Attempt ${attempt}`);
+      const data = await clientFetcher<PaymentVerificationDetail>(
+        `/api/renew/${paymentDetail?.hash}`
+      );
+
+      if (data.response === 200) break;
+      await sleep(5000);
+    }
+
+    if (attempt < 20) {
+      setPaymentStatus("verified");
+      await sleep(5000);
+      setShowPaymentModal(false);
+    } else setPaymentStatus("failed");
+  }
+
   return (
     <>
       <ShowWhen show={instanceModal} when={showInstanceModal} />
+
+      <ShowWhen
+        show={
+          <PaymentModal
+            setShowPaymentModal={setShowPaymentModal}
+            verifyPayment={verifyPayment}
+            paymentDetail={paymentDetail}
+            btnText={verifyPaymentBtnText}
+          />
+        }
+        when={showPaymentModal}
+      />
 
       <div
         onClick={onClick}
@@ -138,11 +204,6 @@ export function Instance({ instance }: Props) {
         <p className="w-full text-sm">{instance.status}</p>
         <p className="w-full text-sm">{terminatesAt}</p>
         <p className="w-full text-sm">{instance.hash}.pem</p>
-
-        {/* <p className="w-full text-sm">
-        <span className="font-bold">${props.price}/month</span> <br />$
-        {props.hourlyRate}/hour
-      </p> */}
       </div>
     </>
   );
