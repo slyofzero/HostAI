@@ -151,22 +151,28 @@ export function DeployInstance() {
       </div>
       <div className="w-full mt-14">
         <h2 className="text-2xl">Choose Plan</h2>
-        <div className="w-full rounded border border-neutral-800 mt-6">
-          <div className="flex flex-row items-center p-2 border-b border-neutral-800">
-            <p className="w-full text-sm text-zinc-400">Name</p>
-            <p className="w-full text-sm text-zinc-400">Cores</p>
-            <p className="w-full text-sm text-zinc-400">Memory</p>
-            {/* <p className="w-full text-sm text-zinc-400">Storage</p> */}
-            <p className="w-full text-sm text-zinc-400">Bandwidth</p>
-            <p className="w-full text-sm text-zinc-400">Price</p>
-          </div>
+        <table className="w-full rounded border border-neutral-800 mt-6">
+          <thead>
+            <tr className="flex flex-row items-center p-2 border-b border-neutral-800 gap-16 md:gap-0">
+              <th className="w-full text-left text-sm text-zinc-400">Name</th>
+              <th className="w-full text-left text-sm text-zinc-400">Cores</th>
+              <th className="w-full text-left text-sm text-zinc-400">Memory</th>
+              {/* <th className="w-full text-left text-sm text-zinc-400">Storage</th> */}
+              <th className="w-full text-left text-sm text-zinc-400">
+                Bandwidth
+              </th>
+              <th className="w-full text-left text-sm text-zinc-400">Price</th>
+            </tr>
+          </thead>
 
-          {Object.entries(instancePlans[deployInstance.type]).map(
-            ([key, value]) => (
-              <InstancePlan key={key} {...value} plan={key} />
-            )
-          )}
-        </div>
+          <tbody>
+            {Object.entries(instancePlans[deployInstance.type]).map(
+              ([key, value]) => (
+                <InstancePlan key={key} {...value} plan={key} />
+              )
+            )}
+          </tbody>
+        </table>
       </div>
 
       <div className="w-full flex justify-end items-center mt-12 px-4">

@@ -60,8 +60,8 @@ export function Header() {
             <Image
               height={200}
               width={200}
-              className="max-w-[80px]"
-              src="/logo.png"
+              className="max-w-[100px]"
+              src="/logo.jpeg"
               alt=""
             />
           </a>

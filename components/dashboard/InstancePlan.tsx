@@ -21,22 +21,24 @@ export function InstancePlan(props: Props) {
   }
 
   return (
-    <div
+    <tr
       onClick={onClick}
       className={classNames(
-        "flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer bg-opacity-50 transition-colors",
+        "flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer bg-opacity-50 transition-colors gap-16 md:gap-0",
         isSelected ? "bg-neutral-500 border-0" : "border-neutral-800"
       )}
     >
-      <p className="w-full text-sm font-bold">{props.name}</p>
-      <p className="w-full text-sm">{props.cores}</p>
-      <p className="w-full text-sm">{props.memory}</p>
-      <p className="w-full text-sm">{props.bandwidth}</p>
-      <p className="w-full text-sm">
+      <td className="w-full whitespace-nowrap text-sm font-bold">
+        {props.name}
+      </td>
+      <td className="w-full whitespace-nowrap text-sm">{props.cores}</td>
+      <td className="w-full whitespace-nowrap text-sm">{props.memory}</td>
+      <td className="w-full whitespace-nowrap text-sm">{props.bandwidth}</td>
+      <td className="w-full whitespace-nowrap text-sm">
         <span className="font-bold">${props.price}/month</span> <br />$
         {props.hourlyRate}/hour
-      </p>
+      </td>
       <ShowWhen show={<SelectTick />} when={isSelected} />
-    </div>
+    </tr>
   );
 }

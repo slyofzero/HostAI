@@ -49,20 +49,21 @@ export default function Home() {
                     <span className="text-white">h</span>&nbsp;
                   </div>
                   <div className="inline-block">
-                    <span className="text-blue-500 font-secondary">H</span>
-                    <span className="text-blue-500 font-secondary">O</span>
-                    <span className="text-blue-500 font-secondary">S</span>
-                    <span className="text-blue-500 font-secondary">T</span>
-                    <span className="text-blue-500 font-secondary"> </span>
-                    <span className="text-blue-500 font-secondary">A</span>
-                    <span className="text-blue-500 font-secondary">I</span>
-                    <span className="text-blue-500 font-secondary">.</span>
+                    <span className="text-purple-600 font-secondary">C</span>
+                    <span className="text-purple-600 font-secondary">L</span>
+                    <span className="text-purple-600 font-secondary">O</span>
+                    <span className="text-purple-600 font-secondary">U</span>
+                    <span className="text-purple-600 font-secondary">D</span>
+                    <span className="text-purple-600 font-secondary"> </span>
+                    <span className="text-purple-600 font-secondary">A</span>
+                    <span className="text-purple-600 font-secondary">I</span>
+                    <span className="text-purple-600 font-secondary">.</span>
                     &nbsp;
                   </div>
                 </div>
               </div>
             </div>
-            <span className="block rounded-sm w-[4px] h-4 sm:h-6 xl:h-12 bg-blue-500 opacity-0"></span>
+            <span className="block rounded-sm w-[4px] h-4 sm:h-6 xl:h-12 bg-purple-600 opacity-0"></span>
           </div>
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
             <a
@@ -84,10 +85,10 @@ export default function Home() {
               rel="noreferrer"
             >
               <button
-                className="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 text-small gap-unit-2 [&amp;>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none data-[hover=true]:opacity-hover w-40 h-10 rounded-md bg-blue-500 text-white"
+                className="z-0 group relative inline-flex items-center justify-center box-border appearance-none select-none whitespace-nowrap font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 px-unit-4 min-w-unit-20 text-small gap-unit-2 [&amp;>svg]:max-w-[theme(spacing.unit-8)] data-[pressed=true]:scale-[0.97] transition-transform-colors-opacity motion-reduce:transition-none data-[hover=true]:opacity-hover w-40 h-10 rounded-md bg-purple-600 text-white"
                 type="button"
               >
-                Buy $HOSTAI
+                Buy $CLOUDAI
               </button>
             </a>
           </div>
@@ -105,7 +106,7 @@ export default function Home() {
             fill="currentColor"
             strokeWidth="0"
             viewBox="0 0 512 512"
-            className="hover:text-blue-500 hover:scale-125 duration-200 cursor-pointer"
+            className="hover:text-purple-600 hover:scale-125 duration-200 cursor-pointer"
             height="1em"
             width="1em"
             xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +120,7 @@ export default function Home() {
             fill="currentColor"
             strokeWidth="0"
             viewBox="0 0 496 512"
-            className="hover:text-blue-500 hover:scale-125 duration-200 cursor-pointer"
+            className="hover:text-purple-600 hover:scale-125 duration-200 cursor-pointer"
             height="1em"
             width="1em"
             xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +135,7 @@ export default function Home() {
             strokeWidth="0"
             role="img"
             viewBox="0 0 24 24"
-            className="hover:text-blue-500 hover:scale-125 duration-200 cursor-pointer"
+            className="hover:text-purple-600 hover:scale-125 duration-200 cursor-pointer"
             height="1em"
             width="1em"
             xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +154,7 @@ export default function Home() {
             fill="currentColor"
             strokeWidth="0"
             viewBox="0 0 320 512"
-            className="hover:text-blue-500 hover:scale-125 duration-200 cursor-pointer"
+            className="hover:text-purple-600 hover:scale-125 duration-200 cursor-pointer"
             height="1em"
             width="1em"
             xmlns="http://www.w3.org/2000/svg"

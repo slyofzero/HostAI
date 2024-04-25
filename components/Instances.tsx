@@ -88,7 +88,7 @@ export function Instance({ instance }: Props) {
             className="p-[2px] rounded-lg transition duration-300 group/input"
             style={{
               background:
-                "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+                "radial-gradient(0px circle at 48px 34.633331298828125px,var(--purple-600),transparent 80%",
             }}
           >
             <div className="bg-zinc-800 text-white px-3 py-2 rounded-md text-sm">
@@ -192,19 +192,27 @@ export function Instance({ instance }: Props) {
         when={showPaymentModal}
       />
 
-      <div
+      <tr
         onClick={onClick}
         className={classNames(
-          "flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer bg-opacity-50 transition-colors"
+          "flex flex-row relative items-center p-2 border-b border-neutral-800 cursor-pointer bg-opacity-50 transition-colors gap-16 md:gap-0"
         )}
       >
-        <p className="w-full text-sm font-bold capitalize">{instance.type}</p>
-        <p className="w-full text-sm capitalize">{instance.plan}</p>
-        <p className="w-full text-sm capitalize">{location}</p>
-        <p className="w-full text-sm">{instance.status}</p>
-        <p className="w-full text-sm">{terminatesAt}</p>
-        <p className="w-full text-sm">{instance.hash}.pem</p>
-      </div>
+        <td className="w-full whitespace-nowrap text-sm font-bold capitalize">
+          {instance.type}
+        </td>
+        <td className="w-full whitespace-nowrap text-sm capitalize">
+          {instance.plan}
+        </td>
+        <td className="w-full whitespace-nowrap text-sm capitalize">
+          {location}
+        </td>
+        <td className="w-full whitespace-nowrap text-sm">{instance.status}</td>
+        <td className="w-full whitespace-nowrap text-sm">{terminatesAt}</td>
+        <td className="w-full whitespace-nowrap text-sm">
+          {instance.hash}.pem
+        </td>
+      </tr>
     </>
   );
 }
@@ -229,20 +237,20 @@ export function Instances() {
   const instances = (
     <div className="w-full">
       <h2 className="text-2xl">Instances</h2>
-      <div className="w-full rounded border border-neutral-800 mt-6">
-        <div className="flex flex-row items-center p-2 border-b border-neutral-800">
-          <p className="w-full text-sm text-zinc-400">Type</p>
-          <p className="w-full text-sm text-zinc-400">Plan</p>
-          <p className="w-full text-sm text-zinc-400">Location</p>
-          <p className="w-full text-sm text-zinc-400">Status</p>
-          <p className="w-full text-sm text-zinc-400">Terminates At</p>
-          <p className="w-full text-sm text-zinc-400">Keypair</p>
-        </div>
+      <table className="w-full rounded border border-neutral-800 mt-6">
+        <tr className="flex flex-row items-center p-2 border-b border-neutral-800 gap-4 md:gap-0">
+          <th className="w-full text-sm text-zinc-400">Type</th>
+          <th className="w-full text-sm text-zinc-400">Plan</th>
+          <th className="w-full text-sm text-zinc-400">Location</th>
+          <th className="w-full text-sm text-zinc-400">Status</th>
+          <th className="w-full text-sm text-zinc-400">Terminates At</th>
+          <th className="w-full text-sm text-zinc-400">Keypair</th>
+        </tr>
 
         {data?.instances.map((instance, key) => (
           <Instance key={key} instance={instance} />
         ))}
-      </div>
+      </table>
     </div>
   );
 

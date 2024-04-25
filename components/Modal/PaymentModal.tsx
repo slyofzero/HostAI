@@ -38,7 +38,7 @@ export function PaymentModal({
           className="p-[2px] rounded-lg transition duration-300 group/input"
           style={{
             background:
-              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--purple-600),transparent 80%",
           }}
         >
           <input
@@ -57,7 +57,7 @@ export function PaymentModal({
           className="p-[2px] rounded-lg transition duration-300 group/input"
           style={{
             background:
-              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--blue-500),transparent 80%",
+              "radial-gradient(0px circle at 48px 34.633331298828125px,var(--purple-600),transparent 80%",
           }}
         >
           <input
