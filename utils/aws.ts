@@ -72,7 +72,7 @@ export async function createInstance(ec2: EC2, orderInformation: StoredOrder) {
     const instanceId = data.Instances?.[0].InstanceId || "";
     log(`Instance created - ${instanceId}`);
 
-    await sleep(10000);
+    await sleep(3000);
 
     const instanceData = await ec2
       .describeInstances({ InstanceIds: [instanceId] })
