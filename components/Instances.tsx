@@ -236,15 +236,20 @@ export function Instances() {
 
   const instances = (
     <div className="w-full">
-      <h2 className="text-2xl">Instances</h2>
+      <div className="flex justify-between items-end">
+        <h2 className="text-2xl">Instances</h2>
+        <span className="font-bold text-sm">Click to view SSH details</span>
+      </div>
       <table className="w-full rounded border border-neutral-800 mt-6">
         <tr className="flex flex-row items-center p-2 border-b border-neutral-800 gap-4 md:gap-0">
-          <th className="w-full text-sm text-zinc-400">Type</th>
-          <th className="w-full text-sm text-zinc-400">Plan</th>
-          <th className="w-full text-sm text-zinc-400">Location</th>
-          <th className="w-full text-sm text-zinc-400">Status</th>
-          <th className="w-full text-sm text-zinc-400">Terminates At</th>
-          <th className="w-full text-sm text-zinc-400">Keypair</th>
+          <th className="w-full text-left text-sm text-zinc-400">Type</th>
+          <th className="w-full text-left text-sm text-zinc-400">Plan</th>
+          <th className="w-full text-left text-sm text-zinc-400">Location</th>
+          <th className="w-full text-left text-sm text-zinc-400">Status</th>
+          <th className="w-full text-left text-sm text-zinc-400">
+            Terminates At
+          </th>
+          <th className="w-full text-left text-sm text-zinc-400">Keypair</th>
         </tr>
 
         {data?.instances.map((instance, key) => (
