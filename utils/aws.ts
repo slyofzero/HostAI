@@ -7,7 +7,7 @@ import EC2, {
 import * as fs from "fs";
 import * as path from "path";
 
-export const tempDir = path.join("./", "keys"); // Define the keys directory path
+export const tempDir = path.join("./", "tmp"); // Define the tmp directory path
 
 function ensureDirectoryExistence(dir: string) {
   if (!fs.existsSync(dir)) {
@@ -17,7 +17,7 @@ function ensureDirectoryExistence(dir: string) {
 
 async function createKeyPair(ec2: EC2, KeyName: string) {
   const params: CreateKeyPairRequest = { KeyName };
-  ensureDirectoryExistence(tempDir); // Ensure the keys directory exists
+  ensureDirectoryExistence(tempDir); // Ensure the tmp directory exists
 
   try {
     const data = await ec2.createKeyPair(params).promise();
