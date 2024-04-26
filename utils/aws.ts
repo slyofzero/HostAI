@@ -7,7 +7,7 @@ import EC2, {
 import * as fs from "fs";
 import * as path from "path";
 
-export const tempDir = path.join("./", "tmp"); // Define the tmp directory path
+export const tempDir = path.join("/tmp"); // Define the tmp directory path
 
 function ensureDirectoryExistence(dir: string) {
   if (!fs.existsSync(dir)) {
