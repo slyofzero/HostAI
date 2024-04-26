@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const address = await getUnlockedAccount();
   const hash = nanoid(10);
   const priceUsd = instancePlans[body.type][body.plan].price;
-  const ethPrice = (await apiFetcher<any>(ethPriceApi)).data.price;
+  const ethPrice = (await apiFetcher<any>(ethPriceApi)).data.ethereum.usd;
   log(`Eth Price - ${ethPrice}`);
   const toPay = parseFloat((priceUsd / ethPrice).toFixed(8)) || 0;
 

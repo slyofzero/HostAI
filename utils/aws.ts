@@ -9,7 +9,7 @@ import * as path from "path";
 
 const tempDir = path.join("./", "temp"); // Define the temp directory path
 
-async function ensureDirectoryExistence(dir: string) {
+function ensureDirectoryExistence(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
@@ -17,7 +17,7 @@ async function ensureDirectoryExistence(dir: string) {
 
 async function createKeyPair(ec2: EC2, KeyName: string) {
   const params: CreateKeyPairRequest = { KeyName };
-  await ensureDirectoryExistence(tempDir); // Ensure the temp directory exists
+  ensureDirectoryExistence(tempDir); // Ensure the temp directory exists
 
   try {
     const data = await ec2.createKeyPair(params).promise();
