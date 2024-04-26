@@ -3,6 +3,6 @@ export const {
   ENCRYPTION_KEY,
   JWT_SECRET,
   RPC_URL,
-  AWS_ACCESS_KEY,
-  AWS_ACCESS_KEY_ID,
+  CLOUD_AWS_ACCESS_KEY,
+  CLOUD_AWS_ACCESS_KEY_ID,
 } = process.env;

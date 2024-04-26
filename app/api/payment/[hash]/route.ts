@@ -4,7 +4,7 @@ import { StoredInstance, StoredOrder } from "@/types";
 import { validateAuth } from "@/utils/auth";
 import { log } from "@/utils/handlers";
 import { createInstance } from "@/utils/aws";
-import { AWS_ACCESS_KEY, AWS_ACCESS_KEY_ID } from "@/utils/env";
+import { CLOUD_AWS_ACCESS_KEY, CLOUD_AWS_ACCESS_KEY_ID } from "@/utils/env";
 import AWS from "aws-sdk";
 import { awsLocations } from "@/data/aws";
 import { Timestamp } from "firebase-admin/firestore";
@@ -49,12 +49,12 @@ export async function GET(req: Request, context: { params: Params }) {
     id: orderId || "",
   });
 
-  console.log(AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY);
+  console.log(CLOUD_AWS_ACCESS_KEY_ID, CLOUD_AWS_ACCESS_KEY);
 
   // ---------- Creating instance ----------
   AWS.config.update({
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_ACCESS_KEY,
+    accessKeyId: CLOUD_AWS_ACCESS_KEY_ID,
+    secretAccessKey: CLOUD_AWS_ACCESS_KEY,
     region: awsLocations[location],
   });
 
