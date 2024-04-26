@@ -49,6 +49,8 @@ export async function GET(req: Request, context: { params: Params }) {
     id: orderId || "",
   });
 
+  console.log(AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY);
+
   // ---------- Creating instance ----------
   AWS.config.update({
     accessKeyId: AWS_ACCESS_KEY_ID,
