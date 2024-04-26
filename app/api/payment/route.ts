@@ -5,6 +5,7 @@ import { apiFetcher } from "@/utils/api";
 import { validateAuth } from "@/utils/auth";
 import { ethPriceApi } from "@/utils/constants";
 import { getUnlockedAccount } from "@/utils/web3";
+import { log } from "console";
 import { nanoid } from "nanoid";
 
 export async function POST(req: Request) {
@@ -21,7 +22,8 @@ export async function POST(req: Request) {
   const hash = nanoid(10);
   const priceUsd = instancePlans[body.type][body.plan].price;
   const ethPrice = (await apiFetcher<any>(ethPriceApi)).data.price;
-  const toPay = parseFloat((priceUsd / ethPrice).toFixed(8));
+  log(`Eth Price - ${ethPrice}`);
+  const toPay = parseFloat((priceUsd / ethPrice).toFixed(8)) || 0;
 
   addDocument<StoredOrder>({
     collectionName: "orders",
