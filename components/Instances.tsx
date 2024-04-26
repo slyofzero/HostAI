@@ -236,9 +236,9 @@ export function Instances() {
 
   const instances = (
     <div className="w-full">
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-center gap-4">
         <h2 className="text-2xl">Instances</h2>
-        <span className="font-bold text-sm">Click to view SSH details</span>
+        <span className="font-bold text-xs sm:text-sm">Click to view</span>
       </div>
       <table className="w-full rounded border border-neutral-800 mt-6">
         <tr className="flex flex-row items-center p-2 border-b border-neutral-800 gap-4 md:gap-0">
