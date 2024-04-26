@@ -6,6 +6,8 @@ import EC2, {
 } from "aws-sdk/clients/ec2";
 import * as fs from "fs";
 import * as path from "path";
+import { log } from "./handlers";
+import { sleep } from "./time";
 
 export const tempDir = path.join("/tmp", "keys"); // Define the tmp directory path
 
@@ -68,6 +70,9 @@ export async function createInstance(ec2: EC2, orderInformation: StoredOrder) {
   try {
     const data = await ec2.runInstances(params).promise();
     const instanceId = data.Instances?.[0].InstanceId || "";
+    log(`Instance created - ${instanceId}`);
+
+    await sleep(10000);
 
     const instanceData = await ec2
       .describeInstances({ InstanceIds: [instanceId] })
